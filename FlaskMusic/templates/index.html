@@ -100,6 +100,7 @@
             margin-bottom: 0.5rem;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -196,6 +197,17 @@
         .submit-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(45, 70, 185, 0.4);
+        }
+
+        /* Button group for multiple buttons */
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .button-container .submit-button {
+            flex: 1;
         }
 
         /* Updated Recommendation styles */
@@ -369,10 +381,287 @@
                 font-size: 0.9rem;
             }
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .add-button {
+            background-color: var(--success);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: black;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-button:hover {
+            background-color: #1ed760;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--success);
+            color: black;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            font-weight: 600;
+            animation: slideInFadeOut 4s forwards;
+        }
+
+        @keyframes slideInFadeOut {
+            0% { transform: translateX(100%); opacity: 0; }
+            10% { transform: translateX(0); opacity: 1; }
+            90% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* New CSS for Mood Selector */
+        .mood-selector {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mood-selector h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .mood-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mood-button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 0.8rem 1.5rem;
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mood-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .mood-button i {
+            font-size: 1.2rem;
+        }
+
+        /* Specific mood colors */
+        .mood-button[data-mood="happy"] i { color: #FFD700; }
+        .mood-button[data-mood="sad"] i { color: #6495ED; }
+        .mood-button[data-mood="energetic"] i { color: #FF5757; }
+        .mood-button[data-mood="relaxed"] i { color: #1DB954; }
+        .mood-button[data-mood="focused"] i { color: #9370DB; }
     </style>
 </head>
+    <script>
+    function showToast(message) {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 4000); // Toast disappears after 4 seconds
+    }
+
+    function addToPlaylist(item, artist) {
+        let fullItem = artist ? `${item} by ${artist}` : item;
+
+        fetch('/add_to_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ item: fullItem })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                showToast('✅ Added to your playlist!');
+            } else {
+                showToast('⚠️ Error: ' + data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            showToast('⚠️ Error adding to playlist.');
+        });
+    }
+    </script>
+
+    <script>
+    // Set up mood button click handlers
+    document.querySelectorAll('.mood-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const mood = this.getAttribute('data-mood');
+            fetch('/mood_recommendations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mood: mood })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.querySelector('.output-container').innerHTML = data;
+                document.querySelector('.output-container').classList.add('fade-in');
+                // Make sure the output container is visible
+                document.querySelector('.output-container').style.display = 'block';
+
+                // Add a refresh button at the top of the output container
+                const refreshButton = document.createElement('button');
+                refreshButton.innerHTML = '<i class="fas fa-redo"></i> Refresh Mood Recommendations';
+                refreshButton.className = 'submit-button';
+                refreshButton.style.marginBottom = '20px';
+                refreshButton.onclick = function(e) {
+                    e.preventDefault();
+                    // Call the mood recommendations endpoint again but with refresh=true
+                    fetch('/mood_recommendations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            mood: mood,
+                            refresh: true
+                        })
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.querySelector('.output-container').innerHTML = data;
+                        // Add the refresh button again
+                        document.querySelector('.output-container').prepend(refreshButton);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                };
+
+                // Add the refresh button at the top of the output container
+                document.querySelector('.output-container').prepend(refreshButton);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+
+    <script>
+    function showToast(message) {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 4000); // Toast disappears after 4 seconds
+    }
+
+    function addArtistToPlaylist(artist) {
+        fetch('/add_artist_to_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ item: artist })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                showToast('✅ Artist added to your list!');
+            } else {
+                showToast('⚠️ Error: ' + data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            showToast('⚠️ Error adding artist.');
+        });
+    }
+    </script>
+
+    <script>
+    function deleteFromArtistPlaylist(artist) {
+        if (!confirm(`Are you sure you want to delete \"${artist}\" from your artists list?`)) {
+            return;
+        }
+
+        fetch('/delete_artist_from_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ item: artist })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response not OK');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error deleting artist.');
+        });
+    }
+    </script>
 <body>
     <div class="container">
+        <div id="toast-container" class="toast-container"></div>
         <div class="navbar">
             <a href="{{ url_for('home') }}" class="app-logo">
                 <i class="fas fa-headphones-alt"></i>
@@ -407,16 +696,77 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-button">
-                <i class="fas fa-search"></i> Find Recommendations
-            </button>
+            <!-- Button Container -->
+            <div class="button-container">
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-search"></i> Find Recommendations
+                </button>
+
+                {% if output %}
+                <!-- Refresh button, only shown when there's output -->
+                <button type="submit" name="refresh" value="true" class="submit-button">
+                    <i class="fas fa-redo"></i> Refresh Recommendations
+                </button>
+                {% endif %}
+            </div>
         </form>
+
+        <!-- New Mood Selector -->
+        <div class="mood-selector">
+            <h3>Or find music based on your mood:</h3>
+            <div class="mood-buttons">
+                <button type="button" class="mood-button" data-mood="happy">
+                    <i class="fas fa-smile"></i> Happy
+                </button>
+                <button type="button" class="mood-button" data-mood="sad">
+                    <i class="fas fa-sad-tear"></i> Sad
+                </button>
+                <button type="button" class="mood-button" data-mood="energetic">
+                    <i class="fas fa-bolt"></i> Energetic
+                </button>
+                <button type="button" class="mood-button" data-mood="relaxed">
+                    <i class="fas fa-cloud"></i> Relaxed
+                </button>
+                <button type="button" class="mood-button" data-mood="focused">
+                    <i class="fas fa-brain"></i> Focused
+                </button>
+            </div>
+        </div>
 
         {% if output %}
             <div class="output-container fade-in">
                 {{ output|safe }}
             </div>
+        {% else %}
+            <div class="output-container fade-in" style="display: none;"></div>
         {% endif %}
     </div>
+
+    <!-- New JavaScript for mood buttons -->
+    <script>
+        // Set up mood button click handlers
+        document.querySelectorAll('.mood-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const mood = this.getAttribute('data-mood');
+                fetch('/mood_recommendations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mood: mood })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.querySelector('.output-container').innerHTML = data;
+                    document.querySelector('.output-container').classList.add('fade-in');
+                    // Make sure the output container is visible
+                    document.querySelector('.output-container').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
