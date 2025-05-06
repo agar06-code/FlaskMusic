@@ -161,20 +161,15 @@
             margin: 0 0 0.5rem 0;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .profile-email {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
         }
 
         /* Cards Grid */
         .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem; /* space between cards */
         }
 
         .card {
@@ -223,14 +218,56 @@
         }
 
         .favorite-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
+        flex-shrink: 0;
+        width: 106px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
         }
 
         .favorite-value {
-            font-size: 1.1rem;
-            font-weight: 500;
+        flex: 1;
+        color: var(--text-primary);
+        font-weight: 500;
+        }
+
+        .favorites-display {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-button {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: color 0.2s;
+            color: #ff5c5c; /* Trash and X are red */
+        }
+
+        .confirm-yes {
+            color: #1DB954; /* Green checkmark */
+        }
+
+        .confirm-no {
+            color: #ff5c5c; /* Red X */
+        }
+
+        .favorite-box {
+            background: #2c2c2c;
+            padding: 10px 15px;
+            border-radius: 10px;
+            flex-grow: 1;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Flash Messages */
@@ -281,6 +318,208 @@
             display: none;
         }
 
+        /* Crop Modal Styles */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crop-modal-content {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .crop-modal-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .crop-container {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .crop-image {
+            position: absolute;
+            transform-origin: center;
+        }
+
+        .crop-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .zoom-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .zoom-control label {
+            width: 60px;
+            margin-right: 10px;
+        }
+
+        .zoom-control input {
+            flex: 1;
+        }
+
+        .position-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .position-button {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .save-crop-button {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .close-modal-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Edit Profile Modal Styles */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-modal-content {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            resize: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .submit-button {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Added styles for joined date display and bio */
+        .joined-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .user-bio {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .bio-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
@@ -317,6 +556,7 @@
     </style>
 </head>
 <body>
+
     <!-- Flash Messages -->
     <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -328,6 +568,66 @@
         {% endwith %}
     </div>
 
+    <!-- Image Crop Modal -->
+    <div id="cropModal" class="crop-modal">
+        <div class="crop-modal-content">
+            <button id="closeCropModal" class="close-modal-button">&times;</button>
+            <h3 class="crop-modal-title">Position Your Photo</h3>
+            <div class="crop-container">
+                <img id="cropImage" class="crop-image" src="" alt="Image to crop">
+            </div>
+            <div class="crop-controls">
+                <div class="zoom-control">
+                    <label for="zoomSlider">Zoom:</label>
+                    <input type="range" id="zoomSlider" min="100" max="200" value="100">
+                </div>
+                <div class="position-controls">
+                    <button id="moveLeft" class="position-button">&larr;</button>
+                    <button id="moveUp" class="position-button">&uarr;</button>
+                    <button id="moveDown" class="position-button">&darr;</button>
+                    <button id="moveRight" class="position-button">&rarr;</button>
+                </div>
+                <button id="saveCrop" class="submit-button save-crop-button">Save Photo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <button id="closeEditModal" class="close-modal-button">&times;</button>
+            <h3 class="edit-modal-title">Edit Your Profile</h3>
+
+            <div class="edit-form">
+                <!-- Bio Section -->
+                <div class="form-group">
+                    <label for="userBio">About Me</label>
+                    <textarea id="userBio" rows="4" placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+                </div>
+
+                <!-- Favorite Genre -->
+                <div class="form-group">
+                    <label for="favoriteGenre">Favorite Genre</label>
+                    <input type="text" id="favoriteGenre" value="{{ user.favorite_genre }}" placeholder="Your favorite music genre">
+                </div>
+
+                <!-- Favorite Artist -->
+                <div class="form-group">
+                    <label for="favoriteArtist">Favorite Artist</label>
+                    <input type="text" id="favoriteArtist" value="{{ user.favorite_artist }}" placeholder="Your favorite artist">
+                </div>
+
+                <!-- Favorite Song -->
+                <div class="form-group">
+                    <label for="favoriteSong">Favorite Song</label>
+                    <input type="text" id="favoriteSong" value="{{ user.favorite_song }}" placeholder="Your favorite song">
+                </div>
+
+                <button id="saveProfile" class="submit-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <div class="sidebar">
@@ -337,30 +637,9 @@
             </div>
 
             <ul class="nav-links">
-                <li class="nav-item">
-                    <a href="{{ url_for('home') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('index') }}" class="nav-link">
-                        <i class="fas fa-search"></i>
-                        <span>Discover</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('profile') }}" class="nav-link active">
-                        <i class="fas fa-user"></i>
-                        <span>Profile</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('logout') }}" class="nav-link">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
+                <li class="nav-item"><a href="{{ url_for('index') }}" class="nav-link"><i class="fas fa-search"></i><span>Discover</span></a></li>
+                <li class="nav-item"><a href="{{ url_for('profile') }}" class="nav-link active"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                <li class="nav-item"><a href="{{ url_for('logout') }}" class="nav-link"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
             </ul>
         </div>
 
@@ -368,45 +647,127 @@
         <div class="main-content">
             <!-- Profile Header -->
             <div class="profile-header">
-                <div class="profile-pic-container">
-                    <img id="profile-pic" src="{{ url_for('static', filename='default-profile.png') }}" alt="Profile Photo">
+                <!-- Profile Picture -->
+                <div class="profile-pic-container" style="margin-left: 20px;">
+                    <img id="profile-pic" src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" alt="Profile Photo" class="profile-pic">
                     <div class="profile-pic-overlay">
                         <i class="fas fa-camera"></i>
                     </div>
-                    <input type="file" id="profile-upload" accept="image/*">
+                    <input type="file" id="profile-upload" name="profile_pic" accept="image/*">
                 </div>
 
-                <div class="profile-info">
+                <!-- User Info -->
+                <div class="profile-info" style="margin-left: 20px;">
                     <h1>Welcome, {{ user.username }}!</h1>
-                    <div class="profile-email">{{ user.email }}</div>
+                    <!-- Removed the email line -->
+                    {% if user.joined_date %}
+                    <div class="joined-date">
+                      Member since {{ user.joined_date.strftime('%B %Y') }}
+                    </div>
+                  {% endif %}
+
+                    <!-- Display the user's bio if they have one -->
+                    <div class="user-bio">
+                        {% if user.bio %}
+                            {{ user.bio }}
+                        {% else %}
+                            <span class="bio-placeholder">No bio yet. Click 'Edit Profile' to add one!</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- The Edit Profile button and joined date will be added via JavaScript -->
                 </div>
             </div>
 
-            <!-- Cards Grid -->
+            <!-- Cards Grid - Rearranged -->
             <div class="cards-grid">
-                <!-- Favorites Card -->
-                <div class="card">
+                <!-- Your New Songs Card -->
+                <div class="card" style="margin-left: 20px;">
                     <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-heart"></i>
-                            Your Favorites
-                        </h2>
+                        <h2 class="card-title"><i class="fas fa-music"></i>Your New Songs</h2>
+                    </div>
+                    <div class="favorites-display">
+                        {% if recent_vibes %}
+                            {% for vibe in recent_vibes %}
+                            <div class="favorite-item">
+                                <button class="delete-button" onclick="deleteFromPlaylist('{{ vibe }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <div class="favorite-box">
+                                    {{ vibe }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="favorite-item">
+                                <div class="favorite-value">Your playlist is empty. Add some music!</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Your New Artists Card -->
+                <div class="card" style="margin-left: 20px;">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fas fa-user"></i>Your New Artists</h2>
+                    </div>
+                    <div class="favorites-display">
+                        {% if recent_artists %}
+                            {% for artist in recent_artists %}
+                            <div class="favorite-item">
+                                <button class="delete-button" onclick="deleteFromArtistPlaylist('{{ artist }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <div class="favorite-box">
+                                    {{ artist }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="favorite-item">
+                                <div class="favorite-value">You haven't added any artists yet.</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Favorites Card - Moved to bottom -->
+                <div class="card" style="margin-left: 20px;">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fas fa-heart"></i>Your Favorites</h2>
                     </div>
 
+                    <!-- Favorites Display -->
                     <div class="favorites-display">
                         <div class="favorite-item">
                             <div class="favorite-label">Favorite Artist</div>
-                            <div class="favorite-value">Ed Sheeran</div>
+                            <div class="favorite-value" id="favorite-artist-display">
+                                {% if user.favorite_artist %}
+                                    <span>{{ user.favorite_artist }}</span>
+                                {% else %}
+                                    <span>None set</span>
+                                {% endif %}
+                            </div>
                         </div>
-
                         <div class="favorite-item">
                             <div class="favorite-label">Favorite Song</div>
-                            <div class="favorite-value">Shape of You</div>
+                            <div class="favorite-value" id="favorite-song-display">
+                                {% if user.favorite_song %}
+                                    <span>{{ user.favorite_song }}</span>
+                                {% else %}
+                                    <span>None set</span>
+                                {% endif %}
+                            </div>
                         </div>
-
                         <div class="favorite-item">
                             <div class="favorite-label">Favorite Genre</div>
-                            <div class="favorite-value">Pop</div>
+                            <div class="favorite-value" id="favorite-genre-display">
+                                {% if user.favorite_genre %}
+                                    <span>{{ user.favorite_genre }}</span>
+                                {% else %}
+                                    <span>None set</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -415,38 +776,407 @@
     </div>
 
     <script>
-        // JavaScript to handle profile photo upload and preview
-        const profileUpload = document.getElementById('profile-upload');
-        const profilePic = document.getElementById('profile-pic');
-        const profilePicOverlay = document.querySelector('.profile-pic-overlay');
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container') || createToastContainer();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
 
-        // Show overlay on hover
-        profilePicOverlay.addEventListener('click', function() {
-            profileUpload.click();
-        });
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
 
-        profileUpload.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    profilePic.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '9999';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '10px';
+            document.body.appendChild(container);
+            return container;
+        }
+    </script>
 
+    <script>
         // Auto-hide flash messages after 5 seconds
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 alert.style.opacity = '0';
-                alert.style.transform = 'translateX(100%)';
+                alert.style.transform = 'translateY(-20px)';
                 setTimeout(() => {
                     alert.remove();
                 }, 300);
             });
         }, 5000);
+    </script>
+
+    <script>
+        function deleteFromPlaylist(vibe) {
+            const button = event.target.closest('button');
+
+            // If user confirms delete (checkmark button)
+            if (button.classList.contains('confirm-yes')) {
+                fetch('/delete_from_playlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ item: vibe })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response not OK');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload(); // Refresh playlist after delete
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Error deleting item.');
+                });
+
+            } else if (button.classList.contains('confirm-no')) {
+                // If user clicks the "X" to cancel
+                button.parentNode.innerHTML = `
+                    <button class="delete-button" onclick="deleteFromPlaylist('${vibe}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="favorite-box">${vibe}</div>
+                `;
+            } else {
+                // First click - show Checkmark and X
+                const parent = button.parentNode;
+                parent.innerHTML = `
+                    <button class="delete-button confirm-yes" onclick="deleteFromPlaylist('${vibe}')">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="delete-button confirm-no" onclick="deleteFromPlaylist('${vibe}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="favorite-box">${vibe}</div>
+                `;
+            }
+        }
+    </script>
+
+    <script>
+        function deleteFromArtistPlaylist(artist) {
+            const button = event.target.closest('button');
+
+            // If user confirms delete (checkmark button)
+            if (button.classList.contains('confirm-yes')) {
+                fetch('/delete_artist_from_playlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ item: artist })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response not OK');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload(); // Refresh list after deleting
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Error deleting artist.');
+                });
+
+            } else if (button.classList.contains('confirm-no')) {
+                // If user clicks the "X" to cancel
+                button.parentNode.innerHTML = `
+                    <button class="delete-button" onclick="deleteFromArtistPlaylist('${artist}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="favorite-box">${artist}</div>
+                `;
+            } else {
+                // First click - show Checkmark and X
+                const parent = button.parentNode;
+                parent.innerHTML = `
+                    <button class="delete-button confirm-yes" onclick="deleteFromArtistPlaylist('${artist}')">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="delete-button confirm-no" onclick="deleteFromArtistPlaylist('${artist}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="favorite-box">${artist}</div>
+                `;
+            }
+        }
+    </script>
+
+    <!-- Image Cropping JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables for image cropping
+            const cropModal = document.getElementById('cropModal');
+            const cropImage = document.getElementById('cropImage');
+            const zoomSlider = document.getElementById('zoomSlider');
+            const moveLeft = document.getElementById('moveLeft');
+            const moveRight = document.getElementById('moveRight');
+            const moveUp = document.getElementById('moveUp');
+            const moveDown = document.getElementById('moveDown');
+            const saveCrop = document.getElementById('saveCrop');
+            const closeCropModal = document.getElementById('closeCropModal');
+
+            let scale = 1;
+            let posX = 0;
+            let posY = 0;
+            let selectedFile = null;
+
+            // When you click on profile-pic-overlay, open file selector
+            document.querySelector('.profile-pic-overlay').addEventListener('click', function() {
+                document.getElementById('profile-upload').click();
+            });
+
+            // When a file is selected
+            document.getElementById('profile-upload').addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    selectedFile = this.files[0];
+
+                    // Check if it's an image
+                    if (!selectedFile.type.startsWith('image/')) {
+                        alert('Please select an image file.');
+                        return;
+                    }
+
+                    // Show the crop modal
+                    cropModal.style.display = 'flex';
+
+                    // Reset crop values
+                    scale = 1;
+                    posX = 0;
+                    posY = 0;
+                    zoomSlider.value = 100;
+
+                    // Load the selected image
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        cropImage.src = e.target.result;
+
+                        // Center the image initially
+                        cropImage.onload = function() {
+                            centerImage();
+                            updateImageTransform();
+                        };
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
+
+            // Zoom slider
+            zoomSlider.addEventListener('input', function() {
+                scale = this.value / 100;
+                updateImageTransform();
+            });
+
+            // Movement buttons
+            moveLeft.addEventListener('click', function() {
+                posX -= 10;
+                updateImageTransform();
+            });
+
+            moveRight.addEventListener('click', function() {
+                posX += 10;
+                updateImageTransform();
+            });
+
+            moveUp.addEventListener('click', function() {
+                posY -= 10;
+                updateImageTransform();
+            });
+
+            moveDown.addEventListener('click', function() {
+                posY += 10;
+                updateImageTransform();
+            });
+
+            // Close modal
+            closeCropModal.addEventListener('click', function() {
+                cropModal.style.display = 'none';
+            });
+
+            // Save cropped image
+            saveCrop.addEventListener('click', function() {
+                // Create a FormData to send to the server
+                const formData = new FormData();
+                formData.append('profile_pic', selectedFile);
+
+                // Send to server
+                fetch('/update_profile_pic', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update profile pic with cache-busting query parameter
+                        document.getElementById('profile-pic').src = data.image_url + '?t=' + new Date().getTime();
+                        showToast('Profile picture updated successfully!');
+                    } else {
+                        showToast('Error updating profile picture: ' + data.message, 'error');
+                    }
+
+                    // Close modal
+                    cropModal.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error updating profile picture', 'error');
+                    cropModal.style.display = 'none';
+                });
+            });
+
+            // Center image function
+            function centerImage() {
+                const containerWidth = 300; // Width of crop container
+                const containerHeight = 300; // Height of crop container
+                const imgWidth = cropImage.naturalWidth;
+                const imgHeight = cropImage.naturalHeight;
+
+                // Calculate scale to fit the smallest dimension
+                const scaleX = containerWidth / imgWidth;
+                const scaleY = containerHeight / imgHeight;
+                scale = Math.max(scaleX, scaleY);
+                zoomSlider.value = scale * 100;
+
+                // Center the image
+                posX = (containerWidth - imgWidth * scale) / 2;
+                posY = (containerHeight - imgHeight * scale) / 2;
+            }
+
+            // Update image transform
+            function updateImageTransform() {
+                cropImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            }
+        });
+    </script>
+
+    <!-- Edit Profile JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add a new Edit Profile button to the profile info section
+            const profileInfo = document.querySelector('.profile-info');
+            const editButton = document.createElement('button');
+            editButton.className = 'submit-button';
+            editButton.id = 'editProfileBtn';
+            editButton.innerHTML = '<i class="fas fa-edit"></i> Edit Profile';
+            profileInfo.appendChild(editButton);
+
+
+            // Get the edit profile modal
+            const editModal = document.getElementById('editProfileModal');
+            const closeEditModal = document.getElementById('closeEditModal');
+            const saveProfile = document.getElementById('saveProfile');
+
+            // Open the edit profile modal when the edit button is clicked
+            editButton.addEventListener('click', function() {
+                editModal.style.display = 'flex';
+            });
+
+            // Close the edit profile modal when the close button is clicked
+            closeEditModal.addEventListener('click', function() {
+                editModal.style.display = 'none';
+            });
+
+            // Save profile changes
+            saveProfile.addEventListener('click', function() {
+                const bio = document.getElementById('userBio').value.trim();
+                const favoriteGenre = document.getElementById('favoriteGenre').value.trim();
+                const favoriteArtist = document.getElementById('favoriteArtist').value.trim();
+                const favoriteSong = document.getElementById('favoriteSong').value.trim();
+
+                const data = {
+                    bio: bio,
+                    favorite_genre: favoriteGenre,
+                    favorite_artist: favoriteArtist,
+                    favorite_song: favoriteSong
+                };
+
+                // Update the database
+                fetch('/update_profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showToast('Profile updated successfully!');
+                        editModal.style.display = 'none';
+
+                        // Update displays without reloading the page
+                        // Update artist display
+                        if (favoriteArtist) {
+                            document.getElementById('favorite-artist-display').innerHTML = `
+                                <span>${favoriteArtist}</span>
+                            `;
+                        }
+
+                        // Update song display
+                        if (favoriteSong) {
+                            document.getElementById('favorite-song-display').innerHTML = `
+                                <span>${favoriteSong}</span>
+                            `;
+                        }
+
+                        // Update genre display
+                        if (favoriteGenre) {
+                            document.querySelectorAll('.favorite-item').forEach(item => {
+                                if (item.querySelector('.favorite-label') && item.querySelector('.favorite-label').innerText === 'Favorite Genre') {
+                                    item.querySelector('.favorite-value').innerText = favoriteGenre;
+                                }
+                            });
+                        }
+
+                        // Update the bio
+                        const userBioElement = document.querySelector('.user-bio');
+                        if (bio) {
+                            userBioElement.innerHTML = bio;
+                        } else {
+                            userBioElement.innerHTML = '<span class="bio-placeholder">No bio yet. Click \'Edit Profile\' to add one!</span>';
+                        }
+                    } else {
+                        showToast('Error updating profile: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error updating profile', 'error');
+                });
+            });
+
+            // Close the modal if the user clicks outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === editModal) {
+                    editModal.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
